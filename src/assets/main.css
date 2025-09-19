@@ -1,0 +1,180 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@layer reset, primevue;
+@import 'tailwindcss';
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import '@vuepic/vue-datepicker/dist/main.css';
+
+:root {
+  font-family: Inter, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: 'Inter', sans-serif;
+  background-color: #f8fafc;
+}
+
+.tab-item.active {
+  border-bottom: 2px solid #1e293b;
+  color: #1e293b;
+}
+
+.tbl-cell {
+  min-height: 82px;
+}
+
+.tox .tox-menubar {
+  display: none !important;
+}
+
+.navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.header {
+  position: fixed;
+  top: 54px;
+  left: 0;
+
+}
+
+.before-top::before {
+  content: '';
+  display: block;
+  min-width: 10px;
+  width: 10px;
+  height: 10px;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0.388638 9.10972C0.18035 8.9014 0.18035 8.5637 0.388638 8.35548L7.47818 1.26589H2.89909C2.60454 1.26589 2.36576 1.0271 2.36576 0.732552C2.36576 0.438003 2.60454 0.199219 2.89909 0.199219H8.76576C8.9072 0.199219 9.04288 0.255411 9.14293 0.355432C9.24288 0.455453 9.29909 0.591101 9.29909 0.732552V6.59923C9.29909 6.89378 9.06026 7.13256 8.76576 7.13256C8.47125 7.13256 8.23242 6.89378 8.23242 6.59923V2.02014L1.14288 9.10972C0.9346 9.31794 0.596915 9.31794 0.388638 9.10972Z' fill='%233E63DD'/%3E%3C/svg%3E%0A");
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.before-bottom::before {
+  content: '';
+  display: block;
+  min-width: 10px;
+  width: 10px;
+  height: 10px;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0.388638 0.888639C0.18035 1.09692 0.18035 1.4346 0.388638 1.64288L7.47818 8.73244H2.89909C2.60454 8.73244 2.36576 8.97126 2.36576 9.26577C2.36576 9.56028 2.60454 9.7991 2.89909 9.7991H8.76576C8.9072 9.7991 9.04288 9.74289 9.14293 9.64294C9.24288 9.54289 9.29909 9.40721 9.29909 9.26577V3.39909C9.29909 3.10454 9.06026 2.86576 8.76576 2.86576C8.47125 2.86576 8.23242 3.10454 8.23242 3.39909V7.9782L1.14288 0.888629C0.9346 0.680351 0.596915 0.680351 0.388638 0.888639Z' fill='%23DC7609'/%3E%3C/svg%3E%0A");
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.radix-themes {
+  width: 100%;
+}
+
+.overflow-table {
+  max-width: 100vw;
+  max-height: calc(100dvh - 210px);
+  min-height: calc(100dvh - 210px);
+}
+
+.rows-counter {
+  z-index: 1;
+}
+
+.rows-counter::before {
+  content: '';
+  position: absolute;
+  display: block;
+  top: -5px;
+  left: 6px;
+  z-index: -1;
+  width: 36px;
+  height: 20px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3Csvg width='36' height='20' viewBox='0 0 36 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M33.75 15L6.75 15C3.43629 15 0.749999 12.3137 0.749999 9L0.75 6.59372e-07' stroke='%239CABBF' stroke-width='1.3'/%3E%3Cpath d='M30.75 11.5L34.492 14.7742C34.6286 14.8938 34.6286 15.1062 34.492 15.2258L30.75 18.5' stroke='%239CABBF' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E%0A");
+}
+
+.hover-card:hover .rows-counter span {
+  background-color: #f3f4f5;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
+
+
+
+/*.dp__input_wrap .dp__input{
+  display: none;
+}
+.dp__input_wrap div:nth-child(1){
+  display: none;
+}
+.dp__input_icon dp__input_icons{
+  display: none !important;
+}*/
+.dp__overlay_cell_active{
+  background-color: #374151 !important;
+}
+.dp__today{
+  border:none !important;
+  background-color: #e5e7eb;
+}
+.dp__active_date{
+  background-color: #374151 !important;
+}
+.dp__calendar_header_item{
+  color: #6b7280; /* text-slate-500 */
+  border-radius: 0.375rem; /* rounded-md */
+  width: 2rem; /* w-8 = 2rem */
+  font-weight: normal; /* font-normal */
+  font-size: 0.8rem;
+ height: 1.5rem;
+  border:none;
+}
+.dp__calendar{
+  padding: 0;
+  text-align: center;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;   /* rounded-md */
+  gap: 1rem; /* space-x-4 */
+  row-gap: 0;
+}
+.dp__instance_calendar{
+  border-radius: 0.375rem; /* rounded-md */
+  background-color: #ffffff; /* bg-white */
+  color: #0f172a; /* text-slate-950 */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+  outline: none;
+  width: fit-content;
+  padding: 0;
+}
+.dp__calendar_header_separator{
+  display: none;
+}
+.dp__calendar_header{
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.dp__inc_dec_button:hover{
+  color: #374151 !important;
+}
+.dp__outer_menu_wrap{
+  border-radius: 0.375rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.dp__theme_light{
+  --dp-menu-border-color: none;
+}

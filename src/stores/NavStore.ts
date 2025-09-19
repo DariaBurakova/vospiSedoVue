@@ -1,0 +1,201 @@
+import {defineStore} from 'pinia';
+
+
+export const useNavStore=defineStore('nav',{
+  state:()=>({
+    loader:false,
+    showMenu:false,
+    showMenuAccess:false,
+    showMenuUser:false,
+    checkedAccess:'Пользователь',
+    menuList:[
+      {
+        id:1,
+        name:'Входящие',
+        path:'/main/inbox',
+        class:'',
+        read:null,
+        unread:null,
+      },
+      {
+  id:2,
+    name:'Исходящие',
+  path:'/main/outgoing',
+  class:'',
+  read:null,
+  unread:null,
+},
+{
+  id:3,
+    name:'Служебные',
+  path:'/main/official',
+  class:'',
+  read:null,
+  unread:null,
+},
+{
+  id:4,
+    name:'Приказы',
+  path:'/main/Orders',
+  class:'',
+  read:null,
+  unread:null,
+}
+],
+    menuListDrawerOne:[
+      {
+        id:1,
+        name:'Протоколы',
+        path:'/main/inbox',
+        class:'',
+      },
+      {
+        id:2,
+        name:'План-графики',
+        path:'/main/outgoing',
+        class:'',
+      },
+    ],
+    menuListDrawerTwo:[
+      {
+        id:1,
+        name:'Договора закупок',
+        path:'/main/inbox',
+        class:'',
+      },
+      {
+        id:2,
+        name:'Список изделий',
+        path:'/main/outgoing',
+        class:'',
+      },
+      {
+        id:3,
+        name:'Журнал поездок',
+        path:'/main/outgoing',
+        class:'',
+      },
+    ],
+    menuListDrawerThree:[
+      {
+        id:1,
+        name:'Журнал брака',
+        path:'/main/inbox',
+        class:'',
+      },
+      {
+        id:2,
+        name:'Журнал производства',
+        path:'/main/outgoing',
+        class:'',
+      },
+      {
+        id:3,
+        name:'Журнал тестирования',
+        path:'/main/outgoing',
+        class:'',
+      },
+      {
+        id:4,
+        name:'Пропуска',
+        path:'/main/outgoing',
+        class:'',
+      }
+    ],
+    menuListDrawerFour:[
+      {
+        id:1,
+        name:'Документация',
+        path:'/main/inbox',
+        class:'',
+      },
+      {
+        id:2,
+        name:'Имущество',
+        path:'/main/outgoing',
+        class:'',
+      },
+    ],
+    menuAccess:[
+      {
+        id:1,
+        name:'Пользователь',
+        path:'',
+        checked:false,
+      },
+      {
+        id:2,
+        name:'Канцелярия',
+        path:'',
+        checked:false,
+      },
+      {
+        id:3,
+        name:'Администратор',
+        path:'',
+        checked:false,
+      },
+    ],
+  }),
+  getters:{
+
+  },
+  actions:{
+    changeShowMenu(){
+      this.showMenu = !this.showMenu;
+    },
+    changeShowMenuAccess(){
+      this.showMenuAccess =!this.showMenuAccess;
+    },
+    changeShowMenuUser(){
+      this.showMenuUser=!this.showMenuUser
+    },
+    handlerFetchMenuList(){
+      this.loader=true;
+      setTimeout(():void=>{
+        this.menuList.find((item:any)=>{
+          if(item.id===1){
+            item.unread=5;
+            item.read=10;
+          }
+          if(item.id===2){
+            item.unread=9;
+            item.read=1;
+          }
+          if(item.id===3){
+            item.unread=7;
+            item.read=18;
+          }
+          if(item.id===4){
+            item.unread=2;
+            item.read=6;
+          }
+        })
+      },3000)
+      setTimeout(():void=>{
+        this.loader=false;
+      },2000)
+
+    },
+    handlerChangeAccessMenu(id:number){
+      this.menuAccess.find((item:any)=>{
+        item.checked=item.id===id
+        if(item.id===id){
+          this.checkedAccess=item.name
+        }
+      })
+    },
+    changeActiveClass(id:number){
+      this.menuList.forEach((itemClass:any)=>{
+        itemClass.class='';
+      })
+      this.menuList.find((itemClass:any)=>{
+        if(itemClass.id===id){
+          itemClass.class='active';
+        }
+
+      })
+    }
+  }
+})
+
