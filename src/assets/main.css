@@ -110,8 +110,7 @@ body {
   }
 }
 
-
-
+/* Datepicker adjustments */
 /*.dp__input_wrap .dp__input{
   display: none;
 }
@@ -137,7 +136,7 @@ body {
   width: 2rem; /* w-8 = 2rem */
   font-weight: normal; /* font-normal */
   font-size: 0.8rem;
- height: 1.5rem;
+  height: 1.5rem;
   border:none;
 }
 .dp__calendar{
