@@ -41,6 +41,7 @@ export interface paths {
                         };
                     };
                 };
+                401: components["responses"]["Unauthorized"];
             };
         };
         delete?: never;
@@ -59,7 +60,12 @@ export interface paths {
         /** List documents */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Page size (default 50) */
+                    limit?: number;
+                    /** @description Offset from start (default 0) */
+                    offset?: number;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -75,6 +81,7 @@ export interface paths {
                         "application/json": components["schemas"]["Document"][];
                     };
                 };
+                401: components["responses"]["Unauthorized"];
             };
         };
         put?: never;
@@ -101,6 +108,8 @@ export interface paths {
                         "application/json": components["schemas"]["Document"];
                     };
                 };
+                400: components["responses"]["BadRequest"];
+                401: components["responses"]["Unauthorized"];
             };
         };
         delete?: never;
@@ -139,6 +148,8 @@ export interface paths {
                         "application/json": components["schemas"]["Document"];
                     };
                 };
+                401: components["responses"]["Unauthorized"];
+                404: components["responses"]["NotFound"];
             };
         };
         /** Update document */
@@ -166,6 +177,9 @@ export interface paths {
                         "application/json": components["schemas"]["Document"];
                     };
                 };
+                400: components["responses"]["BadRequest"];
+                401: components["responses"]["Unauthorized"];
+                404: components["responses"]["NotFound"];
             };
         };
         post?: never;
@@ -188,6 +202,8 @@ export interface paths {
                     };
                     content?: never;
                 };
+                401: components["responses"]["Unauthorized"];
+                404: components["responses"]["NotFound"];
             };
         };
         options?: never;
@@ -199,13 +215,46 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        Error: {
+            error?: string;
+            details?: string;
+        };
         Document: {
             id?: string;
             type: string;
             title: string;
+            meta?: string;
         };
     };
-    responses: never;
+    responses: {
+        /** @description Unauthorized */
+        Unauthorized: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description Bad Request */
+        BadRequest: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description Not Found */
+        NotFound: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+    };
     parameters: never;
     requestBodies: never;
     headers: never;
