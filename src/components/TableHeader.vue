@@ -5,6 +5,31 @@ import { format } from 'date-fns'
 import {useTableHeaderStore} from "@/stores/TableHeaderStore.ts"
 const tableHeader=useTableHeaderStore()
 import VueDatePicker from "@vuepic/vue-datepicker";
+
+// Поиск по столбцам
+const searchValues = ref({
+  senderNumber: '',      // Исх.номер отправителя
+  date: '',              // Дата
+  history: '',           // История
+  organization: '',      // Организация (отправитель)
+  signer: '',            // Подписал
+  position: '',          // Должность
+  content: '',           // Содержание
+  delivery: '',          // Доставка
+  executeUntil: '',      // Исполнить до
+  incomingNumber: '',    // Вх. №
+  incomingDate: '',      // Дата вх.
+  execution: '',         // Исполнение
+  notes: '',             // Заметки
+  files: ''              // Файлы
+})
+
+const emit = defineEmits(['search'])
+
+const handleSearch = (column: string, value: string) => {
+  (searchValues.value as any)[column] = value
+  emit('search', { column, value })
+}
 </script>
 
 <template>
@@ -17,7 +42,13 @@ import VueDatePicker from "@vuepic/vue-datepicker";
           <path d="M16.5 16.5L12.875 12.875M14.8333 8.16667C14.8333 11.8486 11.8486 14.8333 8.16667 14.8333C4.48477 14.8333 1.5 11.8486 1.5 8.16667C1.5 4.48477 4.48477 1.5 8.16667 1.5C11.8486 1.5 14.8333 4.48477 14.8333 8.16667Z"
                 stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <input  type="text" class="rounded-md p-1 text-sm bg-transparent w-full outline-none"/>
+        <input  
+          type="text" 
+          v-model="searchValues.senderNumber"
+              @input="handleSearch('senderNumber', ($event.target as HTMLInputElement).value)"
+          class="rounded-md p-1 text-sm bg-transparent w-full outline-none"
+          placeholder="Поиск по номеру..."
+        />
         </div>
     </div>
   </th>
@@ -50,7 +81,13 @@ import VueDatePicker from "@vuepic/vue-datepicker";
           <path d="M16.5 16.5L12.875 12.875M14.8333 8.16667C14.8333 11.8486 11.8486 14.8333 8.16667 14.8333C4.48477 14.8333 1.5 11.8486 1.5 8.16667C1.5 4.48477 4.48477 1.5 8.16667 1.5C11.8486 1.5 14.8333 4.48477 14.8333 8.16667Z"
                 stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <input  type="text" class="rounded-md p-1 text-sm bg-transparent w-full outline-none"/>
+        <input  
+          type="text" 
+          v-model="searchValues.history"
+              @input="handleSearch('history', ($event.target as HTMLInputElement).value)"
+          class="rounded-md p-1 text-sm bg-transparent w-full outline-none"
+          placeholder="Поиск по истории..."
+        />
         <button  @click="tableHeader.changeShowCalendar(tableHeader.selectDateHistory)"  class="buttonDate">
           <span class="text-sm text-[#64748B]" v-if="tableHeader.selectDateHistory.date == null">дд.мм.гггг</span>
           <span class="text-sm text-[#64748B]" v-else>{{format(tableHeader.selectDateHistory.date, 'dd.MM.yyyy')}}</span>
@@ -74,7 +111,13 @@ import VueDatePicker from "@vuepic/vue-datepicker";
           <path d="M16.5 16.5L12.875 12.875M14.8333 8.16667C14.8333 11.8486 11.8486 14.8333 8.16667 14.8333C4.48477 14.8333 1.5 11.8486 1.5 8.16667C1.5 4.48477 4.48477 1.5 8.16667 1.5C11.8486 1.5 14.8333 4.48477 14.8333 8.16667Z"
                 stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <input  type="text" class="rounded-md p-1 text-sm bg-transparent w-full outline-none"/>
+        <input  
+          type="text" 
+          v-model="searchValues.organization"
+              @input="handleSearch('organization', ($event.target as HTMLInputElement).value)"
+          class="rounded-md p-1 text-sm bg-transparent w-full outline-none"
+          placeholder="Поиск по организации..."
+        />
       </div>
     </div>
   </th>
@@ -86,7 +129,13 @@ import VueDatePicker from "@vuepic/vue-datepicker";
           <path d="M16.5 16.5L12.875 12.875M14.8333 8.16667C14.8333 11.8486 11.8486 14.8333 8.16667 14.8333C4.48477 14.8333 1.5 11.8486 1.5 8.16667C1.5 4.48477 4.48477 1.5 8.16667 1.5C11.8486 1.5 14.8333 4.48477 14.8333 8.16667Z"
                 stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <input  type="text" class="rounded-md p-1 text-sm bg-transparent w-full outline-none"/>
+        <input  
+          type="text" 
+          v-model="searchValues.signer"
+              @input="handleSearch('signer', ($event.target as HTMLInputElement).value)"
+          class="rounded-md p-1 text-sm bg-transparent w-full outline-none"
+          placeholder="Поиск по подписанту..."
+        />
       </div>
     </div>
   </th>
@@ -98,7 +147,13 @@ import VueDatePicker from "@vuepic/vue-datepicker";
           <path d="M16.5 16.5L12.875 12.875M14.8333 8.16667C14.8333 11.8486 11.8486 14.8333 8.16667 14.8333C4.48477 14.8333 1.5 11.8486 1.5 8.16667C1.5 4.48477 4.48477 1.5 8.16667 1.5C11.8486 1.5 14.8333 4.48477 14.8333 8.16667Z"
                 stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <input  type="text" class="rounded-md p-1 text-sm bg-transparent w-full outline-none"/>
+        <input  
+          type="text" 
+          v-model="searchValues.position"
+              @input="handleSearch('position', ($event.target as HTMLInputElement).value)"
+          class="rounded-md p-1 text-sm bg-transparent w-full outline-none"
+          placeholder="Поиск по должности..."
+        />
       </div>
     </div>
   </th>
@@ -110,7 +165,13 @@ import VueDatePicker from "@vuepic/vue-datepicker";
           <path d="M16.5 16.5L12.875 12.875M14.8333 8.16667C14.8333 11.8486 11.8486 14.8333 8.16667 14.8333C4.48477 14.8333 1.5 11.8486 1.5 8.16667C1.5 4.48477 4.48477 1.5 8.16667 1.5C11.8486 1.5 14.8333 4.48477 14.8333 8.16667Z"
                 stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <input  type="text" class="rounded-md p-1 text-sm bg-transparent w-full outline-none"/>
+        <input  
+          type="text" 
+          v-model="searchValues.content"
+              @input="handleSearch('content', ($event.target as HTMLInputElement).value)"
+          class="rounded-md p-1 text-sm bg-transparent w-full outline-none"
+          placeholder="Поиск по содержанию..."
+        />
       </div>
     </div>
   </th>
@@ -122,7 +183,13 @@ import VueDatePicker from "@vuepic/vue-datepicker";
           <path d="M16.5 16.5L12.875 12.875M14.8333 8.16667C14.8333 11.8486 11.8486 14.8333 8.16667 14.8333C4.48477 14.8333 1.5 11.8486 1.5 8.16667C1.5 4.48477 4.48477 1.5 8.16667 1.5C11.8486 1.5 14.8333 4.48477 14.8333 8.16667Z"
                 stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <input  type="text" class="rounded-md p-1 text-sm bg-transparent w-full outline-none"/>
+        <input  
+          type="text" 
+          v-model="searchValues.delivery"
+              @input="handleSearch('delivery', ($event.target as HTMLInputElement).value)"
+          class="rounded-md p-1 text-sm bg-transparent w-full outline-none"
+          placeholder="Поиск по доставке..."
+        />
       </div>
     </div>
   </th>
@@ -153,7 +220,13 @@ import VueDatePicker from "@vuepic/vue-datepicker";
           <path d="M16.5 16.5L12.875 12.875M14.8333 8.16667C14.8333 11.8486 11.8486 14.8333 8.16667 14.8333C4.48477 14.8333 1.5 11.8486 1.5 8.16667C1.5 4.48477 4.48477 1.5 8.16667 1.5C11.8486 1.5 14.8333 4.48477 14.8333 8.16667Z"
                 stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <input  type="text" class="rounded-md p-1 text-sm bg-transparent w-full outline-none"/>
+        <input  
+          type="text" 
+          v-model="searchValues.incomingNumber"
+          @input="handleSearch('incomingNumber', ($event.target as HTMLInputElement).value)"
+          class="rounded-md p-1 text-sm bg-transparent w-full outline-none"
+          placeholder="Поиск по вх. №..."
+        />
       </div>
     </div>
   </th>
@@ -184,7 +257,13 @@ import VueDatePicker from "@vuepic/vue-datepicker";
         <svg  class="min-h-[18px] min-w-[18px]" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M16.5 16.5L12.875 12.875M14.8333 8.16667C14.8333 11.8486 11.8486 14.8333 8.16667 14.8333C4.48477 14.8333 1.5 11.8486 1.5 8.16667C1.5 4.48477 4.48477 1.5 8.16667 1.5C11.8486 1.5 14.8333 4.48477 14.8333 8.16667Z" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <input  type="text" class="rounded-md p-1 text-sm bg-transparent w-full outline-none"/>
+        <input  
+          type="text" 
+          v-model="searchValues.execution"
+          @input="handleSearch('execution', ($event.target as HTMLInputElement).value)"
+          class="rounded-md p-1 text-sm bg-transparent w-full outline-none"
+          placeholder="Поиск по исполнению..."
+        />
       </div>
     </div>
   </th>
@@ -195,7 +274,13 @@ import VueDatePicker from "@vuepic/vue-datepicker";
         <svg  class="min-h-[18px] min-w-[18px]" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M16.5 16.5L12.875 12.875M14.8333 8.16667C14.8333 11.8486 11.8486 14.8333 8.16667 14.8333C4.48477 14.8333 1.5 11.8486 1.5 8.16667C1.5 4.48477 4.48477 1.5 8.16667 1.5C11.8486 1.5 14.8333 4.48477 14.8333 8.16667Z" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <input  type="text" class="rounded-md p-1 text-sm bg-transparent w-full outline-none"/>
+        <input  
+          type="text" 
+          v-model="searchValues.notes"
+          @input="handleSearch('notes', ($event.target as HTMLInputElement).value)"
+          class="rounded-md p-1 text-sm bg-transparent w-full outline-none"
+          placeholder="Поиск по заметкам..."
+        />
       </div>
     </div>
   </th>
@@ -206,7 +291,13 @@ import VueDatePicker from "@vuepic/vue-datepicker";
         <svg  class="min-h-[18px] min-w-[18px]" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M16.5 16.5L12.875 12.875M14.8333 8.16667C14.8333 11.8486 11.8486 14.8333 8.16667 14.8333C4.48477 14.8333 1.5 11.8486 1.5 8.16667C1.5 4.48477 4.48477 1.5 8.16667 1.5C11.8486 1.5 14.8333 4.48477 14.8333 8.16667Z" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <input  type="text" class="rounded-md p-1 text-sm bg-transparent w-full outline-none"/>
+        <input  
+          type="text" 
+          v-model="searchValues.files"
+          @input="handleSearch('files', ($event.target as HTMLInputElement).value)"
+          class="rounded-md p-1 text-sm bg-transparent w-full outline-none"
+          placeholder="Поиск по файлам..."
+        />
       </div>
     </div>
   </th>

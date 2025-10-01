@@ -2,6 +2,12 @@
 import {ref} from 'vue'
 import router from "@/router";
 import logoUrl from "@/assets/Logo.jpg";
+
+const username = ref('');
+const password = ref('');
+const error = ref('');
+const loading = ref(false);
+
 function show() {
   let p:any = document.getElementById('pwd');
   p.setAttribute('type', 'text');
@@ -22,8 +28,40 @@ function handlerShowOrHidden(){
    hide();
   }
 }
-function handlerRouter(){
-  router.push("/main")
+
+async function handleLogin() {
+  if (!username.value || !password.value) {
+    error.value = 'Введите имя пользователя и пароль';
+    return;
+  }
+  
+  loading.value = true;
+  error.value = '';
+  
+  try {
+    const response = await fetch('http://127.0.0.1:1985/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: username.value,
+        password: password.value
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Неверные учетные данные');
+    }
+    
+    const data = await response.json();
+    localStorage.setItem('access_token', data.access_token);
+    router.push("/main");
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Ошибка входа';
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 
@@ -36,15 +74,40 @@ function handlerRouter(){
           <p class="text-slate-600 text-sm">Вход в систему документооборота</p>
         </div>
         <div class="field-set">
+          <div v-if="error" class="auth-error mb-3">
+            {{ error }}
+          </div>
           <div class="form-input-container">
-            <input class="auth-input"  id="txt-input" type="text" placeholder="Имя пользователя" required>
+            <input 
+              class="auth-input" 
+              id="txt-input" 
+              type="text" 
+              placeholder="Имя пользователя" 
+              v-model="username"
+              required
+            >
           </div>
           <div class="form-input-container relative mt-3">
-            <input class="auth-input pr-10" type="password" placeholder="Пароль" id="pwd"  name="password" required>
+            <input 
+              class="auth-input pr-10" 
+              type="password" 
+              placeholder="Пароль" 
+              id="pwd" 
+              name="password" 
+              v-model="password"
+              required
+            >
             <span aria-hidden="true"  type="button" id="eye" @click="handlerShowOrHidden()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);cursor:pointer;">&#128065;</span>
           </div>
           <div class="auth-actions" style="justify-content:center;">
-            <button type="button" class="auth-button" @click="handlerRouter()">Войти</button>
+            <button 
+              type="button" 
+              class="auth-button" 
+              @click="handleLogin"
+              :disabled="loading"
+            >
+              {{ loading ? 'Вход...' : 'Войти' }}
+            </button>
           </div>
         </div>
       </div>

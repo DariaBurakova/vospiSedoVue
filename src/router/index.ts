@@ -6,6 +6,11 @@ import OutGoingView from "@/views/OutGoingView.vue"
 import OfficialView from "@/views/OfficialView.vue";
 import OrdersView from "@/views/OrdersView.vue";
 
+// Check if user is authenticated
+function isAuthenticated() {
+  return !!localStorage.getItem('access_token');
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -18,7 +23,18 @@ const router = createRouter({
       path: '/main',
       name: 'about',
       component: MainView,
+      beforeEnter: (to, from, next) => {
+        if (isAuthenticated()) {
+          next();
+        } else {
+          next('/');
+        }
+      },
       children:[
+        {
+          path:'',
+          redirect: '/main/inbox'
+        },
         {
           path:'inbox',
           component: InboxView,

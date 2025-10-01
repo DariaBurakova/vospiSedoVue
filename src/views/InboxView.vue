@@ -2,14 +2,24 @@
 import HeaderTable from "@/components/HeaderTable.vue";
 import router from "@/router";
 import TableBlock from "@/components/TableBlock.vue";
-const routerName=router.currentRoute.value.name
+import { ref } from 'vue';
+
+const routerName = String(router.currentRoute.value.name)
+const tableBlockRef = ref()
+
+const handleDocumentCreated = () => {
+  // Перезагружаем список документов в TableBlock
+  if (tableBlockRef.value && tableBlockRef.value.loadDocuments) {
+    tableBlockRef.value.loadDocuments()
+  }
+}
 
 </script>
 
 <template>
   <div>
-    <header-table :title="routerName"/>
-    <table-block/>
+    <header-table :title="routerName" @document-created="handleDocumentCreated"/>
+    <table-block ref="tableBlockRef"/>
 
 <!--    <table class="table-auto w-full mt-30">-->
 <!--      <thead>-->

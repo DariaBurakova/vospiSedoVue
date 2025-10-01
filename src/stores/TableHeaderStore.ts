@@ -108,7 +108,7 @@ export const useTableHeaderStore =defineStore('tableHeader',{
     },
   }),
   actions:{
-    changeShowCalendar(objItem):any{
+    changeShowCalendar(objItem: any): any {
       objItem.show=!objItem.show
     }
   }

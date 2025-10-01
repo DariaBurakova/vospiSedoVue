@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { updateDocument, deleteDocument } from '@/api/documents';
 
 const props = defineProps({
   data: {
@@ -7,6 +8,8 @@ const props = defineProps({
     required: true
   }
 });
+
+const emit = defineEmits(['document-updated', 'document-deleted']);
 
 const isNotesModalOpen = ref(false);
 const currentNote = ref('');
@@ -43,6 +46,37 @@ const saveNote = () => {
 const sortedNotes = computed(() => {
   return props.data.notes.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
 });
+
+// Редактирование документа
+const editDocument = async (field, value) => {
+  if (!props.data.id) return;
+  
+  try {
+    const updateData = {};
+    if (field === 'title') updateData.title = value;
+    if (field === 'content') updateData.meta = value;
+    if (field === 'type') updateData.type = value;
+    
+    await updateDocument(props.data.id, updateData);
+    emit('document-updated', props.data.id);
+  } catch (error) {
+    console.error('Error updating document:', error);
+  }
+};
+
+// Удаление документа
+const removeDocument = async () => {
+  if (!props.data.id) return;
+  
+  if (confirm('Вы уверены, что хотите удалить этот документ?')) {
+    try {
+      await deleteDocument(props.data.id);
+      emit('document-deleted', props.data.id);
+    } catch (error) {
+      console.error('Error deleting document:', error);
+    }
+  }
+};
 </script>
 
 <template>
@@ -52,7 +86,7 @@ const sortedNotes = computed(() => {
 </td>
   <td data-col="1" class="col-td" >
     <!-- Кнопка -->
-    <button class="inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:focus-visible:ring-slate-300 border border-slate-200 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50 h-9 w-[240px] justify-start text-left font-normal bg-transparent border-none shadow-none p-0 text-muted-foreground" type="button">
+    <button class="inline-flex items-center gap-2 whitespace-nowrap text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-500 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-transparent hover:bg-gray-50 text-gray-700 h-9 w-[240px] justify-start text-left font-normal p-2" type="button">
       <span>{{ data.outdate }}</span>
     </button>
 </td>
@@ -102,6 +136,7 @@ const sortedNotes = computed(() => {
       type="text"
       class="w-full text-sm border-none bg-transparent focus:outline-none"
       :value="data.content"
+      @blur="editDocument('content', $event.target.value)"
     />
     </td>
   <td data-col="7" class="col-td" >
@@ -112,7 +147,7 @@ const sortedNotes = computed(() => {
     />
     </td>
   <td data-col="8" class="col-td" >
-    <button class="inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:focus-visible:ring-slate-300 border border-slate-200 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50 h-9 w-[240px] justify-start text-left font-normal bg-transparent border-none shadow-none p-0 text-muted-foreground" type="button">
+    <button class="inline-flex items-center gap-2 whitespace-nowrap text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-500 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-transparent hover:bg-gray-50 text-gray-700 h-9 w-[240px] justify-start text-left font-normal p-2" type="button">
       <span>{{ data.performerDate }}</span>
     </button>
     </td>
@@ -124,7 +159,7 @@ const sortedNotes = computed(() => {
     />
     </td>
   <td data-col="10" class="col-td" >
-    <button class="inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:focus-visible:ring-slate-300 border border-slate-200 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50 h-9 w-[240px] justify-start text-left font-normal bg-transparent border-none shadow-none p-0 text-muted-foreground" type="button">
+    <button class="inline-flex items-center gap-2 whitespace-nowrap text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-500 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-transparent hover:bg-gray-50 text-gray-700 h-9 w-[240px] justify-start text-left font-normal p-2" type="button">
       <span>{{ data.indate }}</span>
     </button>
   </td>
@@ -189,13 +224,20 @@ const sortedNotes = computed(() => {
     </div>
   </td>
   <td data-col="13" class="col-td" >
-  <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:focus-visible:ring-slate-300 border border-slate-200   dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50 w-auto h-auto p-0 border-none bg-transparent">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M7.99967 8.66732C8.36786 8.66732 8.66634 8.36884 8.66634 8.00065C8.66634 7.63246 8.36786 7.33398 7.99967 7.33398C7.63148 7.33398 7.33301 7.63246 7.33301 8.00065C7.33301 8.36884 7.63148 8.66732 7.99967 8.66732Z" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M7.99967 3.99935C8.36786 3.99935 8.66634 3.70087 8.66634 3.33268C8.66634 2.96449 8.36786 2.66602 7.99967 2.66602C7.63148 2.66602 7.33301 2.96449 7.33301 3.33268C7.33301 3.70087 7.63148 3.99935 7.99967 3.99935Z" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M7.99967 13.3333C8.36786 13.3333 8.66634 13.0349 8.66634 12.6667C8.66634 12.2985 8.36786 12 7.99967 12C7.63148 12 7.33301 12.2985 7.33301 12.6667C7.33301 13.0349 7.63148 13.3333 7.99967 13.3333Z" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
+  <div class="flex gap-2">
+    <button @click="removeDocument" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-500 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-red-200 bg-white hover:bg-red-50 text-red-600 w-auto h-auto p-1">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 4h12M5.333 4V2.667a1.333 1.333 0 0 1 1.334-1.334h2.666a1.333 1.333 0 0 1 1.334 1.334V4M6.667 7.333v4M9.333 7.333v4M2.667 4h10.666l-.8 9.333a1.333 1.333 0 0 1-1.333 1.2H4.8a1.333 1.333 0 0 1-1.333-1.2L2.667 4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-500 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 w-auto h-auto p-1">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.99967 8.66732C8.36786 8.66732 8.66634 8.36884 8.66634 8.00065C8.66634 7.63246 8.36786 7.33398 7.99967 7.33398C7.63148 7.33398 7.33301 7.63246 7.33301 8.00065C7.33301 8.36884 7.63148 8.66732 7.99967 8.66732Z" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M7.99967 3.99935C8.36786 3.99935 8.66634 3.70087 8.66634 3.33268C8.66634 2.96449 8.36786 2.66602 7.99967 2.66602C7.63148 2.66602 7.33301 2.96449 7.33301 3.33268C7.33301 3.70087 7.63148 3.99935 7.99967 3.99935Z" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M7.99967 13.3333C8.36786 13.3333 8.66634 13.0349 8.66634 12.6667C8.66634 12.2985 8.36786 12 7.99967 12C7.63148 12 7.33301 12.2985 7.33301 12.6667C7.33301 13.0349 7.63148 13.3333 7.99967 13.3333Z" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
   </td>
 
   <!-- Notes Modal -->

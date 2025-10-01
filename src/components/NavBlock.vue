@@ -13,6 +13,12 @@ function handlerChangeRouterAndClass(path:string,id:number){
 function action(){
   navStore.handlerFetchMenuList()
 }
+
+function handleLogout() {
+  localStorage.removeItem('access_token');
+  router.push('/');
+}
+
 action()
 </script>
 <template>
@@ -103,7 +109,7 @@ action()
             <path d="M11.334 2.66699H11.3407" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
           Дни рождения <span class="text-red-600">(3)</span></div>
         <div role="separator" aria-orientation="horizontal" class="-mx-1 my-1 h-px bg-slate-100 dark:bg-slate-800"></div>
-        <div role="menuitem" class="relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&amp;>svg]:size-4 [&amp;>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" tabindex="-1" data-orientation="vertical" data-radix-collection-item="">
+        <div role="menuitem" class="relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&amp;>svg]:size-4 [&amp;>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" tabindex="-1" data-orientation="vertical" data-radix-collection-item="" @click="handleLogout">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V3.33333C2 2.97971 2.14048 2.64057 2.39052 2.39052C2.64057 2.14048 2.97971 2 3.33333 2H6" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
             <path d="M10.666 11.3337L13.9993 8.00033L10.666 4.66699" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
             <path d="M14 8H6" stroke="#1E293B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>

@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 
-let menuListDrawerOne:array=ref([
+let menuListDrawerOne = ref([
   {
     id:1,
     name:'Протоколы',
@@ -16,7 +16,7 @@ let menuListDrawerOne:array=ref([
     class:'',
   },
 ])
-let menuListDrawerTwo:array=ref([
+let menuListDrawerTwo = ref([
   {
     id:1,
     name:'Договора закупок',
@@ -36,7 +36,7 @@ let menuListDrawerTwo:array=ref([
     class:'',
   },
 ])
-let menuListDrawerThree:array=ref([
+let menuListDrawerThree = ref([
   {
     id:1,
     name:'Журнал брака',
@@ -62,7 +62,7 @@ let menuListDrawerThree:array=ref([
     class:'',
   }
 ])
-let menuListDrawerFour:array=ref([
+let menuListDrawerFour = ref([
   {
     id:1,
     name:'Документация',

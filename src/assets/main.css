@@ -8,21 +8,39 @@
 @import '@vuepic/vue-datepicker/dist/main.css';
 
 :root {
-  font-family: Inter, sans-serif;
-  line-height: 1.5;
+  font-family: 'Inter', sans-serif;
   font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0%;
   text-rendering: optimizeLegibility;
 }
 
 * {
   box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0%;
 }
 
 body {
   margin: 0;
   min-width: 320px;
-  font-family: 'Inter', sans-serif;
   background-color: #f8fafc;
+}
+
+/* Базовые стили текста согласно спецификации */
+.text-base {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0%;
 }
 
 .tab-item.active {
@@ -227,12 +245,12 @@ body {
   padding: 0.5rem 0.875rem;
   border-radius: calc(var(--radius) - 2px);
   border: 1px solid transparent;
-  background-color: #3E63DD;
+  background-color: #1a5285;
   color: #ffffff;
   font-weight: 600;
 }
 .auth-button:hover {
-  background-color: #3356c7;
+  background-color: #154a73;
 }
 .auth-button.secondary {
   background-color: #ffffff;

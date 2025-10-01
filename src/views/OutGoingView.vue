@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import HeaderTable from "@/components/HeaderTable.vue";
 import router from "@/router";
-const routerName=router.currentRoute.value.name
+const routerName = String(router.currentRoute.value.name)
 
 </script>
 

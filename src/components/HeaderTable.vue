@@ -1,10 +1,29 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {useFilterHeaderStore} from "@/stores/FilterHeaderStore.ts";
+import DocumentCreateForm from "@/components/DocumentCreateForm.vue";
+
 const props=defineProps({
   title:String,
 })
+
+const emit = defineEmits(['document-created'])
+
 const filterHeader=ref(useFilterHeaderStore())
+const showCreateForm = ref(false)
+
+const handleCreateClick = () => {
+  showCreateForm.value = true
+}
+
+const handleDocumentCreated = () => {
+  emit('document-created')
+  showCreateForm.value = false
+}
+
+const handleCloseForm = () => {
+  showCreateForm.value = false
+}
 
 </script>
 <template>
@@ -67,16 +86,25 @@ const filterHeader=ref(useFilterHeaderStore())
         </div>
         </div>
     </button>
-      <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 dark:focus-visible:ring-slate-300 bg-slate-800 text-slate-50 shadow hover:bg-[#31425A] duration-300 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/90 px-4 py-2 h-10" >
+      <button 
+        @click="handleCreateClick"
+        class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-500 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 h-10"
+        style="background-color: #1E293B; color: white; border-radius: 6px; padding: 0 12px;" 
+      >
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M6.00065 1.33398V10.6673M1.33398 6.00065H10.6673" stroke="#F8FAFC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-
           </path>
-      </svg>Создать
+        </svg>Создать
       </button>
     </div>
   </div>
 
+  <!-- Document Create Form Modal -->
+  <DocumentCreateForm 
+    v-if="showCreateForm"
+    @close="handleCloseForm"
+    @created="handleDocumentCreated"
+  />
 </div>
 </template>
 

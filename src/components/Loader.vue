@@ -1,52 +1,52 @@
 <template>
-  <div >
-    <div class="lds-facebook">
-      <div></div>
-      <div></div>
-      <div></div>
+  <div class="loader-overlay">
+    <div class="loader-container">
+      <div class="spinner"></div>
+      <div class="loader-text">Загрузка</div>
     </div>
   </div>
-
 </template>
 
 <style scoped>
-.lds-facebook {
-  display: block;
-  margin: auto;
-  position: relative;
-  width: 80px;
-  height: 80px;
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
-.lds-facebook div {
-  display: inline-block;
-  position: absolute;
-  left: 8px;
-  width: 16px;
-  background: #B1BED1;
-  animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
-.lds-facebook div:nth-child(1) {
-  left: 8px;
-  animation-delay: -0.24s;
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #1E293B;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
-.lds-facebook div:nth-child(2) {
-  left: 32px;
-  animation-delay: -0.12s;
+
+.loader-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1E293B;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
-.lds-facebook div:nth-child(3) {
-  left: 56px;
-  animation-delay: 0.0s;
-}
-@keyframes lds-facebook {
-  0% {
-    top: 8px;
-    height: 64px;
-  }
-  50%,
-  100% {
-    top: 24px;
-    height: 32px;
-  }
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>
 <script setup lang="ts">
