@@ -12,9 +12,11 @@ export interface Document {
   updated_at: string
 }
 
+// useDocuments — работа со списком документов: загрузка, CRUD, поиск, пагинация
 export function useDocuments() {
   const { success, error: showError } = useToast()
   
+  // Состояние
   const documents = ref<Document[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
@@ -22,7 +24,7 @@ export function useDocuments() {
   const currentPage = ref(1)
   const pageSize = ref(50)
 
-  // Фильтрованные документы
+  // Клиентская фильтрация по заголовку/типу/мета
   const filteredDocuments = computed(() => {
     if (!searchQuery.value) return documents.value
     
@@ -34,7 +36,7 @@ export function useDocuments() {
     )
   })
 
-  // Пагинация
+  // Пагинация (клиентская)
   const paginatedDocuments = computed(() => {
     const start = (currentPage.value - 1) * pageSize.value
     const end = start + pageSize.value
@@ -45,7 +47,7 @@ export function useDocuments() {
     Math.ceil(filteredDocuments.value.length / pageSize.value)
   )
 
-  // Загрузка документов
+  // Загрузка документов с бэкенда
   const loadDocuments = async () => {
     try {
       loading.value = true
@@ -184,7 +186,7 @@ export function useDocuments() {
   }
 }
 
-// Composable для создания документа с валидацией
+// useDocumentForm — отдельный composable для формы создания с валидацией
 export function useDocumentForm() {
   const { success, error } = useToast()
   

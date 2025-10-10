@@ -23,16 +23,18 @@ export function useAuth() {
   const user = ref<User | null>(null)
   const loading = ref(false)
   const isAuthenticated = computed(() => !!user.value)
+  const token = computed(() => localStorage.getItem('access_token'))
 
   // Проверка токена при инициализации
   const initAuth = () => {
     const token = localStorage.getItem('access_token')
     if (token) {
-      // В реальном приложении здесь бы была проверка токена через API
+      const storedRole = localStorage.getItem('user_role') || 'user'
+      const storedUsername = localStorage.getItem('username') || 'user'
       user.value = {
         id: '1',
-        username: 'admin',
-        role: 'admin'
+        username: storedUsername,
+        role: storedRole
       }
     }
   }
@@ -41,15 +43,18 @@ export function useAuth() {
   const loginUser = async (credentials: LoginCredentials) => {
     try {
       loading.value = true
-      // Временная заглушка для API
       const response = { access_token: 'mock_token' }
       
       if (response.access_token) {
         localStorage.setItem('access_token', response.access_token)
+        // временно все логины = admin; при реальном API сюда придет роль
+        const role = credentials.username === 'admin' ? 'admin' : 'user'
+        localStorage.setItem('user_role', role)
+        localStorage.setItem('username', credentials.username)
         user.value = {
           id: '1',
           username: credentials.username,
-          role: 'admin'
+          role
         }
         success('Успех', 'Вы успешно вошли в систему')
         return true
@@ -68,11 +73,12 @@ export function useAuth() {
   const logoutUser = async () => {
     try {
       loading.value = true
-      // await logout() // Временная заглушка
     } catch (err) {
       console.warn('Ошибка при выходе:', err)
     } finally {
       localStorage.removeItem('access_token')
+      localStorage.removeItem('user_role')
+      localStorage.removeItem('username')
       user.value = null
       loading.value = false
       success('Успех', 'Вы вышли из системы')
@@ -95,6 +101,7 @@ export function useAuth() {
     user: computed(() => user.value),
     loading: computed(() => loading.value),
     isAuthenticated,
+    token,
     initAuth,
     loginUser,
     logoutUser,

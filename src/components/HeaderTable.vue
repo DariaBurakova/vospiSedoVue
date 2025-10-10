@@ -2,6 +2,7 @@
 import {ref} from "vue";
 import {useFilterHeaderStore} from "@/stores/FilterHeaderStore.ts";
 import DocumentCreateForm from "@/components/DocumentCreateForm.vue";
+import ColumnsPreferencesModal from "@/components/ColumnsPreferencesModal.vue";
 
 const props=defineProps({
   title:String,
@@ -11,9 +12,14 @@ const emit = defineEmits(['document-created'])
 
 const filterHeader=ref(useFilterHeaderStore())
 const showCreateForm = ref(false)
+const showColumnsPrefs = ref(false)
 
 const handleCreateClick = () => {
   showCreateForm.value = true
+}
+
+const openColumnsPrefs = () => {
+  showColumnsPrefs.value = true
 }
 
 const handleDocumentCreated = () => {
@@ -71,20 +77,13 @@ const handleCloseForm = () => {
       </div>
     </button>
     <div class="flex ml-auto gap-2 absolute right-4">
-      <button type="button" @click="filterHeader.changeShowModalSetting()" id="radix-:rsm:" aria-haspopup="menu" aria-expanded="false" data-state="closed" class="bg-[#E2E8F0] hover:bg-slate-300 duration-300 border border-slate-300 w-10 h-10 p-2 flex items-center justify-center rounded-md">
+      <button type="button" @click="openColumnsPrefs()" class="bg-[#E2E8F0] hover:bg-slate-300 duration-300 border border-slate-300 w-10 h-10 p-2 flex items-center justify-center rounded-md">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M13.334 4.66699H7.33398" stroke="#1E293B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         <path d="M9.33398 11.333H3.33398" stroke="#1E293B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         <path d="M11.334 13.333C12.4386 13.333 13.334 12.4376 13.334 11.333C13.334 10.2284 12.4386 9.33301 11.334 9.33301C10.2294 9.33301 9.33398 10.2284 9.33398 11.333C9.33398 12.4376 10.2294 13.333 11.334 13.333Z" stroke="#1E293B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
         <path d="M4.66602 6.66699C5.77059 6.66699 6.66602 5.77156 6.66602 4.66699C6.66602 3.56242 5.77059 2.66699 4.66602 2.66699C3.56145 2.66699 2.66602 3.56242 2.66602 4.66699C2.66602 5.77156 3.56145 6.66699 4.66602 6.66699Z" stroke="#1E293B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
       </svg>
-        <div v-show="filterHeader.showModalSetting" class="setting-menu " >
-        <div class=" min-w-[8rem] overflow-hidden rounded-md border border-slate-200 bg-white p-1 text-slate-950 shadow-md dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 ">
-          <div class="setting-menu-list  select-none rounded-sm px-2 py-1.5 text-sm    data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&amp;>svg]:size-4 [&amp;>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" >Настроить цвета колонок</div>
-          <div class="setting-menu-list select-none rounded-sm px-2 py-1.5 text-sm    data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&amp;>svg]:size-4 [&amp;>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50">Закрепить колонки</div>
-          <div class="setting-menu-list select-none rounded-sm px-2 py-1.5 text-sm    data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&amp;>svg]:size-4 [&amp;>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50">Что-то еще...</div>
-        </div>
-        </div>
     </button>
       <button 
         @click="handleCreateClick"
@@ -104,6 +103,13 @@ const handleCloseForm = () => {
     v-if="showCreateForm"
     @close="handleCloseForm"
     @created="handleDocumentCreated"
+  />
+
+  <!-- Columns Preferences Modal -->
+  <ColumnsPreferencesModal
+    v-if="showColumnsPrefs"
+    @close="showColumnsPrefs = false"
+    @saved="$emit('document-created')"
   />
 </div>
 </template>

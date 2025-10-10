@@ -12,8 +12,10 @@ export interface HotkeyConfig {
   description?: string
 }
 
+// Глобальный реестр горячих клавиш (по ключу ctrl+shift+...+key)
 const hotkeys = new Map<string, HotkeyConfig>()
 
+// useHotkeys — регистрация/снятие горячих клавиш с автоматической очисткой
 export function useHotkeys() {
   const register = (config: HotkeyConfig) => {
     const key = createKeyString(config)
@@ -70,7 +72,7 @@ export function useHotkeys() {
   }
 }
 
-// Предустановленные горячие клавиши
+// Предустановленные горячие клавиши для типичных действий UI
 export const commonHotkeys = {
   // Создание документа
   createDocument: (handler: () => void) => ({

@@ -1,5 +1,7 @@
 import { ref, computed } from 'vue'
 
+// useValidation — универсальная валидация форм
+// Возвращает реактивные данные, ошибки и хелперы для полной/поштучной проверки
 export interface ValidationRule {
   required?: boolean
   minLength?: number
@@ -21,38 +23,39 @@ export function useValidation<T extends Record<string, any>>(
   const errors = ref<ValidationErrors>({})
   const touched = ref<Record<keyof T, boolean>>({} as Record<keyof T, boolean>)
 
+  // Проверка одного поля по правилу
   const validateField = (field: keyof T, value: any): string[] => {
     const fieldRules = rules[field]
     if (!fieldRules) return []
 
     const fieldErrors: string[] = []
 
-    // Required validation
+    // Обязательное поле
     if (fieldRules.required && (!value || (typeof value === 'string' && !value.trim()))) {
       fieldErrors.push(fieldRules.message || `${String(field)} обязательно для заполнения`)
     }
 
-    // Skip other validations if field is empty and not required
+    // Если поле не обязательно и пусто — остальные проверки пропускаем
     if (!value && !fieldRules.required) {
       return fieldErrors
     }
 
-    // Min length validation
+    // Мин. длина
     if (fieldRules.minLength && typeof value === 'string' && value.length < fieldRules.minLength) {
       fieldErrors.push(fieldRules.message || `Минимум ${fieldRules.minLength} символов`)
     }
 
-    // Max length validation
+    // Макс. длина
     if (fieldRules.maxLength && typeof value === 'string' && value.length > fieldRules.maxLength) {
       fieldErrors.push(fieldRules.message || `Максимум ${fieldRules.maxLength} символов`)
     }
 
-    // Pattern validation
+    // Паттерн
     if (fieldRules.pattern && typeof value === 'string' && !fieldRules.pattern.test(value)) {
       fieldErrors.push(fieldRules.message || `Неверный формат ${String(field)}`)
     }
 
-    // Custom validation
+    // Кастомная проверка
     if (fieldRules.custom) {
       const customError = fieldRules.custom(value)
       if (customError) {
@@ -63,6 +66,7 @@ export function useValidation<T extends Record<string, any>>(
     return fieldErrors
   }
 
+  // Полная проверка формы
   const validate = (): boolean => {
     const newErrors: ValidationErrors = {}
     let isValid = true
@@ -79,13 +83,14 @@ export function useValidation<T extends Record<string, any>>(
     return isValid
   }
 
+  // Проверка поля по блюру
   const validateFieldOnBlur = (field: keyof T) => {
     touched.value[field] = true
     const fieldErrors = validateField(field, data.value[field])
     if (fieldErrors.length > 0) {
-      errors.value[field] = fieldErrors
+      errors.value[field as string] = fieldErrors
     } else {
-      delete errors.value[field]
+      delete errors.value[field as string]
     }
   }
 
@@ -121,7 +126,7 @@ export function useValidation<T extends Record<string, any>>(
   }
 }
 
-// Предустановленные правила валидации
+// Набор предустановленных правил валидации под частые кейсы
 export const validationRules = {
   required: (message?: string): ValidationRule => ({
     required: true,
@@ -144,12 +149,12 @@ export const validationRules = {
   }),
   
   phone: (message?: string): ValidationRule => ({
-    pattern: /^[\+]?[1-9][\d]{0,15}$/,
+    pattern: /^[\+]?[^\D][\d]{0,15}$/,
     message: message || 'Введите корректный номер телефона'
   }),
   
   url: (message?: string): ValidationRule => ({
-    pattern: /^https?:\/\/.+/,
+    pattern: /^https?:\/\/.+/, 
     message: message || 'Введите корректный URL'
   })
 }

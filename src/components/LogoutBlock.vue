@@ -56,6 +56,9 @@ async function handleLogin() {
     
     const data = await response.json();
     localStorage.setItem('access_token', data.access_token);
+    // Временная роль: admin, пока бэкенд не возвращает роль в токене
+    localStorage.setItem('user_role', username.value === 'admin' ? 'admin' : 'user');
+    localStorage.setItem('username', username.value);
     router.push("/main");
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Ошибка входа';

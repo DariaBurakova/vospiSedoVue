@@ -1,9 +1,9 @@
 <template>
   <div
     aria-live="assertive"
-    class="pointer-events-none fixed inset-0 z-50 flex items-end px-4 py-6 sm:items-start sm:p-6"
+    class="pointer-events-none fixed inset-0 z-50 flex items-end justify-end p-4"
   >
-    <div class="flex w-full flex-col items-center space-y-4 sm:items-end">
+    <div class="flex w-full max-w-sm flex-col items-end space-y-3">
       <Toast
         v-for="toast in toasts"
         :key="toast.id"

@@ -3,6 +3,8 @@ import {useNavStore} from "@/stores/NavStore.ts";
 import router from "@/router";
 import {RouterView} from "vue-router";
 import Loader from "@/components/Loader.vue";
+import NotificationsBell from "@/components/NotificationsBell.vue";
+import { computed } from 'vue'
 
 const navStore=useNavStore();
 
@@ -18,6 +20,11 @@ function handleLogout() {
   localStorage.removeItem('access_token');
   router.push('/');
 }
+
+const isAdmin = computed(() => {
+  if (typeof window === 'undefined') return false
+  return window.localStorage.getItem('user_role') === 'admin'
+})
 
 action()
 </script>
@@ -39,13 +46,14 @@ action()
   </button>
   <div  class="drawer-menu" v-show="navStore.showMenu" >
     <div data-side="bottom" data-align="center" role="menu" aria-orientation="vertical" data-state="open" class=" min-w-[8rem] overflow-hidden rounded-md border border-slate-200 bg-white p-1 text-slate-950 shadow-md dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 " >
-      <div v-for="itemOne in navStore.menuListDrawerOne" :key="itemOne.id" role="menuitem" class="drawer-menu-in  select-none rounded-sm px-2 py-1.5 text-sm    data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&amp;>svg]:size-4 [&amp;>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" tabindex="-1" data-orientation="vertical" data-radix-collection-item="">{{itemOne.name}}</div>
+      <div v-for="itemOne in navStore.menuListDrawerOne" :key="itemOne.id" role="menuitem" class="drawer-menu-in  select-none rounded-sm px-2 py-1.5 text-sm    data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" tabindex="-1" data-orientation="vertical" data-radix-collection-item="">{{itemOne.name}}</div>
       <div role="separator" aria-orientation="horizontal" class="-mx-1 my-1 h-px bg-slate-100 dark:bg-slate-800"></div>
-      <div  v-for="itemTwo in navStore.menuListDrawerTwo" :key="itemTwo.id" role="menuitem" class="drawer-menu-in  select-none  rounded-sm px-2 py-1.5 text-sm  data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&amp;>svg]:size-4 [&amp;>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" tabindex="-1" data-orientation="vertical" data-radix-collection-item="">{{itemTwo.name}}</div>
+      <div  v-for="itemTwo in navStore.menuListDrawerTwo" :key="itemTwo.id" role="menuitem" class="drawer-menu-in  select-none  rounded-sm px-2 py-1.5 text-sm  data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" tabindex="-1" data-orientation="vertical" data-radix-collection-item="">{{itemTwo.name}}</div>
       <div role="separator" aria-orientation="horizontal" class="-mx-1 my-1 h-px bg-slate-100 dark:bg-slate-800"></div>
-      <div v-for="itemThree in navStore.menuListDrawerThree" :key="itemThree.id" role="menuitem" class="drawer-menu-in  rounded-sm px-2 py-1.5 text-sm outline-none  data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&amp;>svg]:size-4 [&amp;>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" tabindex="-1" data-orientation="vertical" data-radix-collection-item="">{{itemThree.name}}</div>
+      <div v-for="itemThree in navStore.menuListDrawerThree" :key="itemThree.id" role="menuitem" class="drawer-menu-in  rounded-sm px-2 py-1.5 text-sm outline-none  data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" tabindex="-1" data-orientation="vertical" data-radix-collection-item="">{{itemThree.name}}</div>
       <div role="separator" aria-orientation="horizontal" class="-mx-1 my-1 h-px bg-slate-100 dark:bg-slate-800"></div>
-      <div v-for="itemFour in navStore.menuListDrawerFour" :key="itemFour.id"role="menuitem" class="drawer-menu-in  rounded-sm px-2 py-1.5 text-sm  data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&amp;>svg]:size-4 [&amp;>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" tabindex="-1" data-orientation="vertical" data-radix-collection-item="">{{itemFour.name}}</div>
+      <div v-for="itemFour in navStore.menuListDrawerFour" :key="itemFour.id"role="menuitem" class="drawer-menu-in  rounded-sm px-2 py-1.5 text-sm  data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" tabindex="-1" data-orientation="vertical" data-radix-collection-item="">{{itemFour.name}}</div>
+      <div v-if="isAdmin" role="menuitem" class="drawer-menu-in  rounded-sm px-2 py-1.5 text-sm cursor-pointer" @click="router.push('/admin/users')">Админка</div>
       <div role="separator" aria-orientation="horizontal" class="-mx-1 my-1 h-px bg-slate-100 dark:bg-slate-800"></div>
     </div>
   </div>
@@ -53,11 +61,13 @@ action()
   <div class="nav-right flex items-center gap-6">
     <button data-accent-color class="rt-reset rt-BaseButton rt-r-size-2 rt-variant-solid rt-Button transparent flex items-center gap-2">
       <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M13 5.00065V4.00065C13 3.64703 12.8595 3.30789 12.6095 3.05784C12.3594 2.80779 12.0203 2.66732 11.6667 2.66732H2.33333C1.97971 2.66732 1.64057 2.80779 1.39052 3.05784C1.14048 3.30789 1 3.64703 1 4.00065V13.334C1 13.6876 1.14048 14.0267 1.39052 14.2768C1.64057 14.5268 1.97971 14.6673 2.33333 14.6673H4.66667M9.66667 1.33398V4.00065M4.33333 1.33398V4.00065M1 6.66732H4.33333M10.6667 11.6673L9.66667 10.834V9.33398M13.6667 10.6673C13.6667 11.7282 13.2452 12.7456 12.4951 13.4957C11.7449 14.2459 10.7275 14.6673 9.66667 14.6673C8.6058 14.6673 7.58839 14.2459 6.83824 13.4957C6.08809 12.7456 5.66667 11.7282 5.66667 10.6673C5.66667 9.60645 6.08809 8.58904 6.83824 7.83889C7.58839 7.08875 8.6058 6.66732 9.66667 6.66732C10.7275 6.66732 11.7449 7.08875 12.4951 7.83889C13.2452 8.58904 13.6667 9.60645 13.6667 10.6673Z"
+        <path d="M13 5.00065V4.00065C13 3.64703 12.8595 3.30789 12.6095 3.05784C12.3594 2.80779 12.0203 2.66732 11.6667 2.66732H2.33333C1.97971 2.66732 1.64057 2.80779 1.39052 3.05784C1.14048 3.30789 1 3.64703 1 4.00065V13.334C1 13.6876 1.14048 14.0267 1.39052 14.2768C1.64057 14.5268 1.97971 14.6673 2.33333 14.6673H4.66667M9.66667 1.33398V4.00065M4.33333 1.33398В4.00065M1 6.66732H4.33333M10.6667 11.6673L9.66667 10.834V9.33398M13.6667 10.6673C13.6667 11.7282 13.2452 12.7456 12.4951 13.4957C11.7449 14.2459 10.7275 14.6673 9.66667 14.6673C8.6058 14.6673 7.58839 14.2459 6.83824 13.4957C6.08809 12.7456 5.66667 11.7282 5.66667 10.6673C5.66667 9.60645 6.08809 8.58904 6.83824 7.83889C7.58839 7.08875 8.6058 6.66732 9.66667 6.66732C10.7275 6.66732 11.7449 7.08875 12.4951 7.83889C13.2452 8.58904 13.6667 9.60645 13.6667 10.6673Z"
               stroke="#1E293B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-      </svg>
+    </svg>
       <u class="text-sm">Получить статистику</u>
     </button>
+    <!-- Колокольчик уведомлений -->
+    <NotificationsBell />
     <button type="button" role="combobox" class="button-access" @click="navStore.changeShowMenuAccess()">
       <span class="pe-1">Доступ:</span>
       <span style="pointer-events: none;">{{navStore.checkedAccess}}</span>
@@ -90,27 +100,27 @@ action()
           Инструкция пользователя</div>
         <div role="menuitem" class="user-block-menuitem" tabindex="-1" data-orientation="vertical" data-radix-collection-item="">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M14.666 5.33301L10.666 7.99967L14.666 10.6663V5.33301Z" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-            <path d="M9.33398 4H2.66732C1.93094 4 1.33398 4.59695 1.33398 5.33333V10.6667C1.33398 11.403 1.93094 12 2.66732 12H9.33398C10.0704 12 10.6673 11.403 10.6673 10.6667V5.33333C10.6673 4.59695 10.0704 4 9.33398 4Z" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.666 5.33301L10.666 7.99967L14.666 10.6663В5.33301Z" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M9.33398 4H2.66732C1.93094 4 1.33398 4.59695 1.33398 5.33333В10.6667C1.33398 11.403 1.93094 12 2.66732 12H9.33398C10.0704 12 10.6673 11.403 10.6673 10.6667В5.33333C10.6673 4.59695 10.0704 4 9.33398 4Z" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             </path>
           </svg>
           Видео инструкция</div>
         <div role="menuitem" class="user-block-menuitem" tabindex="-1" data-orientation="vertical" data-radix-collection-item="">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13.3327 12.9997V13.333C13.3327 13.6866 13.1922 14.0258 12.9422 14.2758C12.6921 14.5259 12.353 14.6663 11.9993 14.6663H3.99935C3.64573 14.6663 3.30659 14.5259 3.05654 14.2758C2.80649 14.0258 2.66602 13.6866 2.66602 13.333V2.66634C2.66602 2.31272 2.80649 1.97358 3.05654 1.72353C3.30659 1.47348 3.64573 1.33301 3.99935 1.33301H9.66602L11.9993 3.66634" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M5.33398 12H6.00065" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M13.3327 12.9997В13.333C13.3327 13.6866 13.1922 14.0258 12.9422 14.2758C12.6921 14.5259 12.353 14.6663 11.9993 14.6663H3.99935C3.64573 14.6663 3.30659 14.5259 3.05654 14.2758C2.80649 14.0258 2.66602 13.6866 2.66602 13.333В2.66634C2.66602 2.31272 2.80649 1.97358 3.05654 1.72353C3.30659 1.47348 3.64573 1.33301 3.99935 1.33301H9.66602L11.9993 3.66634" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M5.33398 12H6.00065" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
             <path d="M12.2793 6.40714C12.4094 6.27713 12.5637 6.174 12.7336 6.10364C12.9034 6.03328 13.0855 5.99707 13.2693 5.99707C13.4532 5.99707 13.6353 6.03328 13.8051 6.10364C13.975 6.174 14.1293 6.27713 14.2593 6.40714C14.3894 6.53715 14.4925 6.69149 14.5628 6.86136C14.6332 7.03122 14.6694 7.21328 14.6694 7.39714C14.6694 7.581 14.6332 7.76306 14.5628 7.93293C14.4925 8.10279 14.3894 8.25713 14.2593 8.38714L11.2993 11.3338L8.66602 12.0005L9.32602 9.36714L12.2793 6.40714Z" stroke="#1E293B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
           Шаблоны документов</div>
         <div role="menuitem" class="user-block-menuitem" tabindex="-1" data-orientation="vertical" data-radix-collection-item="">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13.3327 13.9997V8.66634C13.3327 8.31272 13.1922 7.97358 12.9422 7.72353C12.6921 7.47348 12.353 7.33301 11.9993 7.33301H3.99935C3.64573 7.33301 3.30659 7.47348 3.05654 7.72353C2.80649 7.97358 2.66602 8.31272 2.66602 8.66634V13.9997" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M2.66602 10.6667C2.66602 10.6667 2.99935 10 3.99935 10C4.99935 10 5.66602 11.3333 6.66602 11.3333C7.66602 11.3333 8.33268 10 9.33268 10C10.3327 10 10.9993 11.3333 11.9993 11.3333C12.9993 11.3333 13.3327 10.6667 13.3327 10.6667" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-            <path d="M1.33398 14H14.6673" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M4.66602 5.33301V6.66634" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-            <path d="M8 5.33301V6.66634" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M11.334 5.33301V6.66634" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M13.3327 13.9997В8.66634C13.3327 8.31272 13.1922 7.97358 12.9422 7.72353C12.6921 7.47348 12.353 7.33301 11.9993 7.33301H3.99935C3.64573 7.33301 3.30659 7.47348 3.05654 7.72353C2.80649 7.97358 2.66602 8.31272 2.66602 8.66634В13.9997" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M2.66602 10.6667C2.66602 10.6667 2.99935 10 3.99935 10C4.99935 10 5.66602 11.3333 6.66602 11.3333C7.66602 11.3333 8.33268 10 9.33268 10C10.3327 10 10.9993 11.3333 11.9993 11.3333C12.9993 11.3333 13.3327 10.6667 13.3327 10.6667" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M1.33398 14H14.6673" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M4.66602 5.33301В6.66634" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M8 5.33301В6.66634" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M11.334 5.33301В6.66634" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
             <path d="M4.66602 2.66699H4.67268" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M8 2.66699H8.00667" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
             <path d="M11.334 2.66699H11.3407" stroke="#965EDC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
           Дни рождения <span class="text-red-600">(3)</span></div>
         <div role="separator" aria-orientation="horizontal" class="-mx-1 my-1 h-px bg-slate-100 dark:bg-slate-800"></div>
-        <div role="menuitem" class="relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&amp;>svg]:size-4 [&amp;>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" tabindex="-1" data-orientation="vertical" data-radix-collection-item="" @click="handleLogout">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V3.33333C2 2.97971 2.14048 2.64057 2.39052 2.39052C2.64057 2.14048 2.97971 2 3.33333 2H6" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        <div role="menuitem" class="relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0 dark:focus:bg-slate-800 dark:focus:text-slate-50" tabindex="-1" data-orientation="vertical" data-radix-collection-item="" @click="handleLogout">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667В3.33333C2 2.97971 2.14048 2.64057 2.39052 2.39052C2.64057 2.14048 2.97971 2 3.33333 2H6" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
             <path d="M10.666 11.3337L13.9993 8.00033L10.666 4.66699" stroke="#020617" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
             <path d="M14 8H6" stroke="#1E293B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
           Выход</div>

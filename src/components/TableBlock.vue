@@ -4,6 +4,10 @@ import { ref, onMounted } from 'vue';
 import { listDocuments, createDocument, updateDocument, deleteDocument } from '@/api/documents';
 import { useToast } from '@/composables/useToast';
 import { useHotkeys, commonHotkeys } from '@/composables/useHotkeys';
+import { useTablePreferences as usePrefsFull } from '@/composables/useTablePreferences'
+import ColumnsPreferencesModal from '@/components/ColumnsPreferencesModal.vue'
+
+const emit = defineEmits(['open-chat'])
 
 const { success, error: showError } = useToast();
 
@@ -11,6 +15,18 @@ const columnsData = ref([]);
 const filteredData = ref([]);
 const loading = ref(false);
 const error = ref('');
+const showColumnsPrefs = ref(false)
+const { visibleColumns, load: loadPrefs, order, widths } = usePrefsFull()
+
+const openPreferences = () => { showColumnsPrefs.value = true }
+const reloadAfterPrefs = () => {
+  loadPrefs()
+}
+
+const openChat = (room) => { 
+  emit('open-chat', room);
+}
+
 const searchFilters = ref({
   senderNumber: '',      // Исх.номер отправителя
   date: '',              // Дата
@@ -33,49 +49,49 @@ const filterData = () => {
   filteredData.value = columnsData.value.filter(doc => {
     const matchesSenderNumber = !searchFilters.value.senderNumber || 
       doc.outnom.toLowerCase().includes(searchFilters.value.senderNumber.toLowerCase());
-    
+
     const matchesDate = !searchFilters.value.date || 
       doc.outdate.includes(searchFilters.value.date);
-    
+
     const matchesHistory = !searchFilters.value.history || 
       (doc.content && doc.content.toLowerCase().includes(searchFilters.value.history.toLowerCase()));
-    
+
     const matchesOrganization = !searchFilters.value.organization || 
       (doc.org && doc.org.toLowerCase().includes(searchFilters.value.organization.toLowerCase()));
-    
+
     const matchesSigner = !searchFilters.value.signer || 
       (doc.signer && doc.signer.toLowerCase().includes(searchFilters.value.signer.toLowerCase()));
-    
+
     const matchesPosition = !searchFilters.value.position || 
       (doc.dolj && doc.dolj.toLowerCase().includes(searchFilters.value.position.toLowerCase()));
-    
+
     const matchesContent = !searchFilters.value.content || 
       (doc.content && doc.content.toLowerCase().includes(searchFilters.value.content.toLowerCase()));
-    
+
     const matchesDelivery = !searchFilters.value.delivery || 
       (doc.delivery && doc.delivery.toLowerCase().includes(searchFilters.value.delivery.toLowerCase()));
-    
+
     const matchesExecuteUntil = !searchFilters.value.executeUntil || 
       (doc.till && doc.till.includes(searchFilters.value.executeUntil));
-    
+
     const matchesIncomingNumber = !searchFilters.value.incomingNumber || 
       (doc.innom && doc.innom.toLowerCase().includes(searchFilters.value.incomingNumber.toLowerCase()));
-    
+
     const matchesIncomingDate = !searchFilters.value.incomingDate || 
       (doc.indate && doc.indate.includes(searchFilters.value.incomingDate));
-    
+
     const matchesExecution = !searchFilters.value.execution || 
       (doc.outType && doc.outType.toLowerCase().includes(searchFilters.value.execution.toLowerCase()));
-    
+
     const matchesNotes = !searchFilters.value.notes || 
       (doc.notes && doc.notes.some(note => note.toLowerCase().includes(searchFilters.value.notes.toLowerCase())));
-    
+
     const matchesFiles = !searchFilters.value.files || 
       (doc.upLt && doc.upLt.name && doc.upLt.name.toLowerCase().includes(searchFilters.value.files.toLowerCase()));
-    
-    return matchesSenderNumber && matchesDate && matchesHistory && matchesOrganization && 
-           matchesSigner && matchesPosition && matchesContent && matchesDelivery && 
-           matchesExecuteUntil && matchesIncomingNumber && matchesIncomingDate && 
+
+    return matchesSenderNumber && matchesDate && matchesHistory && matchesOrganization &&
+           matchesSigner && matchesPosition && matchesContent && matchesDelivery &&
+           matchesExecuteUntil && matchesIncomingNumber && matchesIncomingDate &&
            matchesExecution && matchesNotes && matchesFiles;
   });
 };
@@ -206,6 +222,7 @@ const { register } = useHotkeys();
 
 onMounted(() => {
   loadDocuments();
+  loadPrefs();
   
   // Регистрируем горячие клавиши
   register(commonHotkeys.refresh(() => {
@@ -243,142 +260,6 @@ defineExpose({
   error
 });
 
-// const columnsData=[
-//   {
-//   numberDocument: '12/348670',
-//   dateDocument: '12.11.2024',
-//   links: [{id:1,link:'В/33-08 от 30.12.2023'}, {id:2,link:'ВH/32-08 от 30.12.2023'}],
-//   showMore: true,
-//   nameCompany: 'ООО «Компания»',
-//   nameResponsibility: 'А. Т. Константинов',
-//   namePosition:'Генеральный директор',
-//   text:'Текст приказа по основной деятельности делится на две части. Первая – констатирующая. В ней приводится основание для издания приказа.',
-//   email:'email@mail.com',
-//   performerDate:'12.11.2024',
-//   numberIn:'12/348670',
-//   dateIn:'12.11.2024',
-//   label: 'Канцелярия',
-//   checked: true,
-//   counter: 5,
-//   name: 'К. Александров',
-//   unchecked: false,
-//   placeholder: 'добавить заметку',
-//   valueText: 'Содержит текст заметки',
-//   letter: 'Письмо',
-//   notes: [],
-// },
-//   {
-//     numberDocument: '12/348670',
-//     dateDocument: '12.11.2024',
-//     links: [{id:1,link:'В/33-08 от 30.12.2023'}, {id:2,link:'ВH/32-08 от 30.12.2023'}],
-//     showMore: true,
-//     nameCompany: 'ООО «Компания»',
-//     nameResponsibility: 'А. Т. Константинов',
-//     namePosition:'Генеральный директор',
-//     text:'Текст приказа по основной деятельности делится на две части. Первая – констатирующая. В ней приводится основание для издания приказа.',
-//     email:'email@mail.com',
-//     performerDate:'12.11.2024',
-//     numberIn:'12/348670',
-//     dateIn:'12.11.2024',
-//     label: 'Канцелярия',
-//     checked: true,
-//     counter: 5,
-//     name: 'К. Александров',
-//     unchecked: false,
-//     placeholder: 'добавить заметку',
-//     valueText: 'Содержит текст заметки',
-//     letter: 'Письмо',
-//   },
-//   {
-//     numberDocument: '12/348670',
-//     dateDocument: '12.11.2024',
-//     links: [{id:1,link:'В/33-08 от 30.12.2023'}, {id:2,link:'ВH/32-08 от 30.12.2023'}],
-//     showMore: true,
-//     nameCompany: 'ООО «Компания»',
-//     nameResponsibility: 'А. Т. Константинов',
-//     namePosition:'Генеральный директор',
-//     text:'Текст приказа по основной деятельности делится на две части. Первая – констатирующая. В ней приводится основание для издания приказа.',
-//     email:'email@mail.com',
-//     performerDate:'12.11.2024',
-//     numberIn:'12/348670',
-//     dateIn:'12.11.2024',
-//     label: 'Канцелярия',
-//     checked: true,
-//     counter: 5,
-//     name: 'К. Александров',
-//     unchecked: false,
-//     placeholder: 'добавить заметку',
-//     valueText: 'Содержит текст заметки',
-//     letter: 'Письмо',
-//   },
-//   {
-//     numberDocument: '12/348670',
-//     dateDocument: '12.11.2024',
-//     links: [{id:1,link:'В/33-08 от 30.12.2023'}, {id:2,link:'ВH/32-08 от 30.12.2023'}],
-//     showMore: true,
-//     nameCompany: 'ООО «Компания»',
-//     nameResponsibility: 'А. Т. Константинов',
-//     namePosition:'Генеральный директор',
-//     text:'Текст приказа по основной деятельности делится на две части. Первая – констатирующая. В ней приводится основание для издания приказа.',
-//     email:'email@mail.com',
-//     performerDate:'12.11.2024',
-//     numberIn:'12/348670',
-//     dateIn:'12.11.2024',
-//     label: 'Канцелярия',
-//     checked: true,
-//     counter: 5,
-//     name: 'К. Александров',
-//     unchecked: false,
-//     placeholder: 'добавить заметку',
-//     valueText: 'Содержит текст заметки',
-//     letter: 'Письмо',
-//   },
-//   {
-//     numberDocument: '12/348670',
-//     dateDocument: '12.11.2024',
-//     links: [{id:1,link:'В/33-08 от 30.12.2023'}, {id:2,link:'ВH/32-08 от 30.12.2023'}],
-//     showMore: true,
-//     nameCompany: 'ООО «Компания»',
-//     nameResponsibility: 'А. Т. Константинов',
-//     namePosition:'Генеральный директор',
-//     text:'Текст приказа по основной деятельности делится на две части. Первая – констатирующая. В ней приводится основание для издания приказа.',
-//     email:'email@mail.com',
-//     performerDate:'12.11.2024',
-//     numberIn:'12/348670',
-//     dateIn:'12.11.2024',
-//     label: 'Канцелярия',
-//     checked: true,
-//     counter: 5,
-//     name: 'К. Александров',
-//     unchecked: false,
-//     placeholder: 'добавить заметку',
-//     valueText: 'Содержит текст заметки',
-//     letter: 'Письмо',
-//   },
-//   {
-//     numberDocument: '12/348670',
-//     dateDocument: '12.11.2024',
-//     links: [{id:1,link:'В/33-08 от 30.12.2023'}, {id:2,link:'ВH/32-08 от 30.12.2023'}],
-//     showMore: true,
-//     nameCompany: 'ООО «Компания»',
-//     nameResponsibility: 'А. Т. Константинов',
-//     namePosition:'Генеральный директор',
-//     text:'Текст приказа по основной деятельности делится на две части. Первая – констатирующая. В ней приводится основание для издания приказа.',
-//     email:'email@mail.com',
-//     performerDate:'12.11.2024',
-//     numberIn:'12/348670',
-//     dateIn:'12.11.2024',
-//     label: 'Канцелярия',
-//     checked: true,
-//     counter: 5,
-//     name: 'К. Александров',
-//     unchecked: false,
-//     placeholder: 'добавить заметку',
-//     valueText: 'Содержит текст заметки',
-//     letter: 'Письмо',
-//   },]
-
-
 import TableHeader from "@/components/TableHeader.vue";
 </script>
 <template>
@@ -395,16 +276,26 @@ import TableHeader from "@/components/TableHeader.vue";
       </div>
       
       <!-- Таблица документов -->
-      <table v-else class="border border-gray-200">
+      <table v-else class="border border-gray-200" style="background-color: #fff9f0;">
+        <colgroup>
+          <template v-for="colId in order" :key="colId">
+            <col v-if="visibleColumns.has(colId)"
+                 :style="widths[colId] ? `width:${widths[colId]}px;` : ''" />
+          </template>
+        </colgroup>
         <thead class="sticky-header">
-          <table-header @search="handleSearch" class=" "/>
+          <table-header @search="handleSearch" @open-preferences="openPreferences" class=" "/>
         </thead>
         <tbody class="" >
           <tr class=" hover:bg-gray-50" v-for="(col, index) in filteredData" :key="index">
-            <table-body  
+            <!-- Каждую колонку рендерим из TableBody, а видимость контролируем CSS/атрибутами -->
+            <table-body
               :data="col"
+              :visible-columns="visibleColumns"
+              :order="order"
               @document-updated="handleDocumentUpdated"
               @document-deleted="handleDocumentDeleted"
+              @open-chat="openChat"
             />
           </tr>
         </tbody>
@@ -418,6 +309,14 @@ import TableHeader from "@/components/TableHeader.vue";
       </div>
     </div>
   </div>
+
+  <!-- Модалка настроек колонок -->
+  <ColumnsPreferencesModal
+    v-if="showColumnsPrefs"
+    @close="showColumnsPrefs = false"
+    @saved="reloadAfterPrefs"
+  />
+
 </template>
 
 <style>

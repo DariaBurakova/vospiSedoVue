@@ -14,12 +14,17 @@ const handleDocumentCreated = () => {
   }
 }
 
+const handleOpenChat = (roomId: string) => {
+  // Эмитим событие наверх для открытия чата
+  window.dispatchEvent(new CustomEvent('app:open-chat', { detail: { roomId } }))
+}
+
 </script>
 
 <template>
   <div>
     <header-table :title="routerName" @document-created="handleDocumentCreated"/>
-    <table-block ref="tableBlockRef"/>
+    <table-block ref="tableBlockRef" @open-chat="handleOpenChat"/>
 
 <!--    <table class="table-auto w-full mt-30">-->
 <!--      <thead>-->
